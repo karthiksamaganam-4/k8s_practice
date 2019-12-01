@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -f docker-compose.prod.yml
+      --replicas=2
+    kompose.version: 1.19.0 (30736a39)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: todo-api-gateway
+  name: todo-api-gateway
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -f docker-compose.prod.yml
+          --replicas=2
+        kompose.version: 1.19.0 (30736a39)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: todo-api-gateway
+    spec:
+      containers:
+      - args:
+        - sh
+        - /home/node/app/start.sh
+        env:
+        - name: CACHE_SERVICE_URL
+        - name: RABBITMQ_URL
+        - name: SEARCH_SERVICE_URL
+        - name: STORAGE_SERVICE_URL
+        image: gravitonian/todo-api-gateway:1.0
+        name: todo-api-gateway
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "134217728"
+      restartPolicy: Always
+status: {}

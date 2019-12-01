@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -f docker-compose.prod.yml
+      --replicas=2
+    kompose.version: 1.19.0 (30736a39)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: todo-storage-ingestion
+  name: todo-storage-ingestion
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -f docker-compose.prod.yml
+          --replicas=2
+        kompose.version: 1.19.0 (30736a39)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: todo-storage-ingestion
+    spec:
+      containers:
+      - args:
+        - sh
+        - /home/node/app/start.sh
+        env:
+        - name: POSTGRES_DATABASE
+        - name: POSTGRES_HOST
+        - name: POSTGRES_PASSWORD
+        - name: POSTGRES_PORT
+        - name: POSTGRES_USER
+        - name: RABBITMQ_URL
+        image: gravitonian/todo-storage-ingestion:1.0
+        name: todo-storage-ingestion
+        resources:
+          limits:
+            memory: "134217728"
+      restartPolicy: Always
+status: {}
